@@ -1,3 +1,4 @@
+"""Simple HTTP server for lab11."""
 import http.server
 import socketserver
 
