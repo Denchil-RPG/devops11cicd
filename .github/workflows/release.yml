@@ -4,6 +4,9 @@ on:
   push:
     branches: [ dev ]
 
+permissions:
+  contents: write
+
 jobs:
   push_to_registry:
     name: Push Docker image to Docker Hub
@@ -26,6 +29,8 @@ jobs:
   touch-k8s-manifest:
     needs: [ push_to_registry ]
     runs-on: ubuntu-24.04
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - name: Insert release date
@@ -36,4 +41,5 @@ jobs:
           git config --global user.name 'Release Runner'
           git config --global user.email 'runner@users.noreply.github.com'
           git commit -am "Release"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
           git push --force origin HEAD:release
